@@ -1,0 +1,27 @@
+{
+  "name": "gitlabhooks",
+  "version": "0.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://10.137.5.204:8088/ethan/gitlabhooks.git"
+  },
+  "keywords": [
+    "slack",
+    "gitlab",
+    "hooks"
+  ],
+  "author": "Ethan Tsai",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.3"
+  }
+}
