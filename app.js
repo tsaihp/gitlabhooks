@@ -121,9 +121,9 @@ app.post('/gitlab', async function(req, res, next) {
           if (token) {
             if (token && (action === 'open' ||
                 (action === 'update' && body.changes && Object.keys(body.changes).length === 0))) {
-              // trigger
+              debug(`${body.project.path_with_namespace}/${branch}`, 'trigger');
               await triggerPipeline(projectId, branch, token);
-              debug(`${branch}`, 'trigger pipeline');
+              await slack.send(`Success to trigger pipeline in ${body.project.path_with_namespace}/${branch}`, channel, undefined, MERGE_TS_TABLE[tsKey]);
             }
           }
         }
@@ -199,7 +199,7 @@ app.post('/gitlab', async function(req, res, next) {
         message += `in <${body.project.web_url}|${body.project.path_with_namespace}>: *${title}* `;
 
         if (channel) {
-          await slackHook.send(message, channel, [
+          await slack.send(message, channel, [
             {
               text: `${body.object_attributes.note}`,
               color: '#000000',
