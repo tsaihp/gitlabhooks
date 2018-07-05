@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const SLACK_TOKEN = process.env.SLACK_TOKEN ? process.env.SLACK_TOKEN : undefined;//'xoxb-273384278129-pYUEQ25GkJAVKiwT085Va3Qq';
+const SLACK_TOKEN = process.env.SLACK_TOKEN ? process.env.SLACK_TOKEN : undefined;
 const AS_NAME = '小助理';
 const ICON_URL = 'https://avatars.slack-edge.com/2017-11-22/276988224758_f2a72ff5a1ad0a09a559_48.jpg';
 const DEFAULT_CNAHHEL = 'test_channel';
@@ -25,7 +25,7 @@ const send = (message, channel, attachments, toThread) => new Promise( async (re
   };
 
   if (channel) {
-    data.channel = channel;  
+    data.channel = channel;
   }
 
   if (toThread !== undefined) {
