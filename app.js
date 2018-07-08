@@ -84,28 +84,7 @@ app.post('/gitlab', async function(req, res, next) {
         const tsKey = `${projectId}_${body.object_attributes.iid}`;
 
         try{
-          if (!MERGE_TS_TABLE[tsKey]) {
-            const messages = await slack.getChannelMessages(channel, 300);
-            let threadMsg = messages.find(el => {
-              if (el.type !== 'message' || !el.text) {
-                return false;
-              }
-
-              if (el.text.includes(`open merge request !${body.object_attributes.iid}>`)) {
-                return true;
-              }
-
-              if (el.text.includes(`update merge request !${body.object_attributes.iid}>`) && el.thread_ts) {
-                return true;
-              }
-
-              return false;
-            });
-
-            if (threadMsg) {
-              MERGE_TS_TABLE[tsKey] = threadMsg.ts;
-            }
-          }
+          MERGE_TS_TABLE[tsKey] = await slack.getMessageThreadId(channel, `open merge request !${body.object_attributes.iid}>`);
 
           const res = await slack.send(message, channel, [
             {
@@ -141,41 +120,7 @@ app.post('/gitlab', async function(req, res, next) {
 
         if (channel) {
           try {
-            // TODO
-            if (!MERGE_TS_TABLE[tsKey]) {
-              const messages = await slack.getChannelMessages(channel, 300);
-
-              // debug
-              // messages.forEach(el => {
-              //   if (el.text.includes('merge request')) {
-              //     debug(`${el.text} ${el.ts} ${el.thread_ts}`, "");
-              //   }
-              // });
-
-              let threadMsg = messages.find(el => {
-                if (el.type !== 'message' || !el.text) {
-                  return false;
-                }
-
-                if (el.text.includes(`open merge request !${body.merge_request.iid}>`)) {
-                  return true;
-                }
-
-                if (el.text.includes(`merge request !${body.merge_request.iid}>`) && el.thread_ts) {
-                  return true;
-                }
-
-                return false;
-              });
-
-              if (threadMsg) {
-                MERGE_TS_TABLE[tsKey] = threadMsg.ts;
-                console.log(threadMsg);
-              }
-              else {
-                debug(`merge request !${body.merge_request.iid}`, 'Cannot found!');
-              }
-            }
+            MERGE_TS_TABLE[tsKey] = await slack.getMessageThreadId(channel, `open merge request !${body.merge_request.iid}>`);
 
             const res = await slack.send(message, channel, [
               {

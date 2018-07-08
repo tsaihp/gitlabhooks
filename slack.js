@@ -4,6 +4,7 @@ const SLACK_TOKEN = process.env.SLACK_TOKEN ? process.env.SLACK_TOKEN : undefine
 const AS_NAME = '小助理';
 const ICON_URL = 'https://avatars.slack-edge.com/2017-11-22/276988224758_f2a72ff5a1ad0a09a559_48.jpg';
 const DEFAULT_CNAHHEL = 'test_channel';
+const MESSAGES_SEARCH_COUNT = 500;
 
 const SLACK_API = (api) => `https://slack.com/api/${api}`;
 
@@ -106,29 +107,39 @@ const getChannelMessages = (channel, count) => new Promise( async (resolve, reje
   }
 });
 
+const getMessageThreadId = (channel, searchMsg) => new Promise( async (resolve, reject) => {
+  try {
+    const messages = await getChannelMessages(channel, MESSAGES_SEARCH_COUNT);
+    const foundMsg = messages.find(el => {
+      if (el.type === 'message'
+          && el.text
+          && el.text.includes(searchMsg)) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    });
+
+    if (foundMsg) {
+      resolve(foundMsg.ts);
+    }
+    else {
+      reject(undefined);
+    }
+  }
+  catch(err) {
+    debug(`thread id`, 'fail to get');
+    console.log(err);
+  }
+});
+
+exports.send = send;
+exports.getChannelMessages = getChannelMessages;
+exports.getMessageThreadId = getMessageThreadId;
+
 // Check
 if (!SLACK_TOKEN) {
   console.log('Please set env.SLACK_TOKEN first.');
   process.exit(-1);
 }
-
-exports.send = send;
-exports.getChannelMessages = getChannelMessages;
-
-// send('ya');
-// getChannelMessages('dni-standard')
-// .then(res => {
-//   res.forEach(el => {
-//     if (el.type === "message") {
-//       if (el.user) {
-//         console.log(`${el.user} (${el.ts}): ${el.text}`);
-//       }
-//       else if (el.username) {
-//         console.log(`${el.username} (${el.ts}): ${el.text}`);
-//       }
-//     }
-//   });
-// })
-// .catch(err => {
-
-// })
