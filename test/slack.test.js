@@ -1,4 +1,4 @@
-const slack = require('../slack');
+const slack = require('../apis/slack');
 
 test('Send message', async () => {
   let res = await slack.send('Test to send message.');

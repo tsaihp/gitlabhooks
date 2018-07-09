@@ -1,7 +1,7 @@
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var slack = require('./slack');
+var slack = require('./apis/slack');
 var axios = require('axios');
 
 var app = express();
