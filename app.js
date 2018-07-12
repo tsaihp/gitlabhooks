@@ -141,15 +141,20 @@ app.post('/gitlab', async function(req, res, next) {
       else if ('issue' in body) {
         message = `${body.user.name}(${body.user.username}) `;
         message += `<${body.issue.url}|commented on issue #${body.issue.iid}> `;
-        message += `in <${body.project.web_url}|${body.project.path_with_namespace}>: *${title}* `;
+        message += `in <${body.project.web_url}|${body.project.path_with_namespace}>: *${body.issue.title}* `;
 
         if (channel) {
-          await slack.send(message, channel, [
-            {
-              text: `${body.object_attributes.note}`,
-              color: '#000000',
-            }
-          ]);
+          try {
+            await slack.send(message, channel, [
+              {
+                text: `${body.object_attributes.note}`,
+                color: '#000000',
+              }
+            ]);
+          }
+          catch (err) {
+            console.log(err);
+          }
         }
       }
     }
